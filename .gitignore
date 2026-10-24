@@ -1,0 +1,48 @@
+# ==========================================
+# REKORA Project Root .gitignore
+# ==========================================
+
+# Local Java SDK Bundles
+jdk-17/
+
+# Built Android Binaries & Packages
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Gradle Build Cache & Artifacts
+.gradle/
+**/build/
+build/
+app/build/
+app/app/build/
+
+# IDE Configuration & Workspace State
+.idea/
+*.iml
+.kotlin/
+captures/
+.externalNativeBuild/
+.cxx/
+local.properties
+app/local.properties
+
+# Keystores & Cryptographic Signing Keys
+*.jks
+*.keystore
+rekora-keystore.properties
+app/app/rekora-release.jks
+
+# Cloud Services & Environment Secrets
+google-services.json
+.env
+*.env
+!.env.example
+
+# OS & Memory Dumps
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.hprof
+*.log

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --primary: #0B1F33;
+  --secondary: #214E7A;
+  --accent: #2E7D8F;
+  --bg: #F7F9FB;
+  --text-main: #18212B;
+  --text-muted: #5E6873;
+  --border: #D9E0E7;
+  --white: #FFFFFF;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--text-main);
+  background: #fff;
+  font-size: 10pt;
+  line-height: 1.5;
+  margin: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+@page { size: A4; margin: 0; }
+
+.page {
+  width: 210mm;
+  height: 297mm;
+  position: relative;
+  page-break-after: always;
+  background: var(--white);
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+/* Safe Area Content */
+.content {
+  position: absolute;
+  top: 15mm;
+  left: 20mm;
+  right: 20mm;
+  bottom: 20mm;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 3mm;
+  margin-bottom: 6mm;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.header-left { font-weight: 800; color: var(--primary); font-size: 10pt; letter-spacing: 1px;}
+.header-right { font-size: 7.5pt; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;}
+
+/* Footer */
+.footer {
+  position: absolute;
+  bottom: 10mm;
+  left: 20mm;
+  right: 20mm;
+  border-top: 1px solid var(--border);
+  padding-top: 3mm;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 8pt;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+h1, h2, h3, h4 { margin: 0; color: var(--primary); font-weight: 700; line-height: 1.2; }
+h1 { font-size: 24pt; margin-bottom: 4mm; letter-spacing: -0.5px; }
+h2 { font-size: 16pt; margin-bottom: 4mm; color: var(--primary); }
+h3 { font-size: 11pt; margin-bottom: 3mm; color: var(--secondary); text-transform: uppercase; letter-spacing: 0.5px;}
+p { margin: 0 0 3mm 0; }
+ul { margin: 0 0 3mm 0; padding-left: 5mm; }
+li { margin-bottom: 1.5mm; }
+
+.text-accent { color: var(--accent); }
+.text-muted { color: var(--text-muted); }
+.bold { font-weight: 700; }
+
+/* Grid Systems */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin-bottom: 4mm; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin-bottom: 4mm; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4mm; margin-bottom: 4mm; }
+
+/* Blocks */
+.block { border-top: 2px solid var(--primary); padding-top: 2mm; margin-bottom: 4mm; }
+.block-title { font-size: 10pt; font-weight: 800; color: var(--primary); margin-bottom: 1mm; text-transform: uppercase; letter-spacing: 0.5px;}
+.block-num { font-size: 14pt; font-weight: 300; color: var(--accent); margin-bottom: 1mm; display: block;}
+
+/* Callout */
+.callout {
+  background: var(--bg);
+  border-left: 3px solid var(--accent);
+  padding: 4mm;
+  margin: 4mm 0;
+  font-size: 10.5pt;
+  font-weight: 500;
+  color: var(--primary);
+}
+
+/* Diagrams */
+.diagram-flow { display: flex; align-items: center; justify-content: space-between; margin: 4mm 0; width: 100%;}
+.diagram-node { 
+  border: 1px solid var(--border); 
+  padding: 2mm 2mm; 
+  font-size: 7.5pt; 
+  font-weight: 700; 
+  text-align: center; 
+  background: var(--white);
+  color: var(--primary);
+  border-radius: 2px;
+  flex: 1;
+  margin: 0 1mm;
+}
+.diagram-node.accent { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+.diagram-arrow { color: var(--accent); font-size: 9pt; font-weight: bold; }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; margin: 4mm 0; font-size: 8.5pt; }
+th, td { padding: 2mm 3mm; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
+th { font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 7.5pt; letter-spacing: 0.5px; border-bottom: 1px solid var(--text-muted); }
+.num-cell { text-align: right; font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: none; }
+
+/* Custom UI Concept */
+.ui-concept {
+  border: 1px solid var(--border);
+  background: var(--white);
+  margin: 6mm 0;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.ui-header { background: var(--bg); padding: 4mm 6mm; border-bottom: 1px solid var(--border); border-radius: 4px 4px 0 0;}
+.ui-body { padding: 6mm; }
+
+/* Timeline */
+.timeline { position: relative; margin: 6mm 0; padding-left: 8mm; border-left: 1px solid var(--border); }
+.timeline-item { position: relative; margin-bottom: 6mm; }
+.timeline-item:last-child { margin-bottom: 0; }
+.timeline-item::before {
+  content: ''; position: absolute; left: -9.5mm; top: 1mm; width: 3mm; height: 3mm;
+  background: var(--white); border: 2px solid var(--accent); border-radius: 50%;
+}
+
+/* Cover Specifics */
+.cover-wrapper { display: flex; flex-direction: column; justify-content: space-between; height: 100%; padding: 10mm 0; }
+.cover-brand { font-size: 44pt; font-weight: 800; color: var(--primary); letter-spacing: -1.5px; line-height: 1; margin-bottom: 4mm; }
+.cover-tagline { font-size: 16pt; font-weight: 300; color: var(--accent); letter-spacing: 0.5px; margin-bottom: 20mm; }
+.cover-title { font-size: 24pt; font-weight: 700; border-bottom: 2px solid var(--primary); padding-bottom: 4mm; margin-bottom: 6mm; }
+.cover-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10mm; margin-top: auto; }
+.meta-label { font-size: 8pt; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2mm; letter-spacing: 0.5px; }
+.meta-value { font-size: 10pt; font-weight: 500; }
+
+/* Section Opener */
+.section-opener { display: flex; flex-direction: column; justify-content: center; height: 100%; }
+.section-num { font-size: 40pt; font-weight: 300; color: var(--accent); margin-bottom: 4mm; }
+.section-title { font-size: 28pt; font-weight: 800; color: var(--primary); margin-bottom: 8mm; border-bottom: 2px solid var(--primary); padding-bottom: 4mm; }
+.section-desc { font-size: 14pt; font-weight: 300; color: var(--text-main); max-width: 140mm; line-height: 1.6; }
+
+/* Helpers */
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.text-center { text-align: center; }
+.mb-0 { margin-bottom: 0; }
+.mt-4 { margin-top: 4mm; }
+.p-4 { padding: 4mm; }
+</style>
+</head>
+<body>
+
+<!-- PAGE 01: COVER -->
+<div class="page">
+  <div class="content">
+    <div class="cover-wrapper">
+      <div>
+        <div class="cover-brand">REKORA</div>
+        <div class="cover-tagline">FROM IDEA TO PROTOTYPE.<br>FROM PROTOTYPE TO EVOLUTION.</div>
+        
+        <div class="cover-title">PROJECT PROPOSAL</div>
+        <div style="font-size: 12pt; color: var(--text-muted);">Integrated Engineering Project Development & Prototyping Ecosystem</div>
+      </div>
+      
+      <div class="cover-meta">
+        <div>
+          <div class="meta-label">SUBMITTED TO</div>
+          <div class="meta-value">
+            <strong>Dr. B. Babu Manoharan M.A., MBA., Ph.D</strong><br>
+            Chairman<br>
+            St. Joseph's College of Engineering, Chennai
+          </div>
+        </div>
+        <div>
+          <div class="meta-label">SUBMITTED BY</div>
+          <div class="meta-value">
+            <strong>Reshma S</strong><br>
+            Founder & CEO, REKORA<br>
+            On behalf of the REKORA Founding Team<br><br>
+            September 22, 2026
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 02: EXEC SUMMARY -->
+<div class="page">
+  <div class="content">
+    <div class="header">
+      <div class="header-left">REKORA</div>
+      <div class="header-right">Executive Summary</div>
+    </div>
+    
+    <h2>01. EXECUTIVE SUMMARY</h2>
+    
+    <div style="font-size: 14pt; font-weight: 300; color: var(--primary); margin-bottom: 8mm; border-left: 2px solid var(--accent); padding-left: 6mm;">
+      Engineering projects should not end at submission.
+    </div>
+    
+    <p>Today's student engineering projects involve a highly disconnected set of activities. A typical engineering student must independently navigate project discovery, component sourcing, CAD modification, fabrication, coding, testing, and documentation. Once a project is evaluated, the physical hardware is often discarded, and the engineering knowledge developed during the process is lost.</p>
+    
+    <p>REKORA connects these fragmented activities into one continuous ecosystem.</p>
+    
+    <!-- Redesigned Compact Lifecycle Flow -->
+    <div style="background: var(--bg); padding: 6mm; margin: 8mm 0; border: 1px solid var(--border);">
+      <div class="diagram-flow" style="margin: 0;">
+        <div class="diagram-node">IDEA</div><div class="diagram-arrow">→</div>
+        <div class="diagram-node">DESIGN</div><div class="diagram-arrow">→</div>
+        <div class="diagram-node">SOURCE</div><div class="diagram-arrow">→</div>
+        <div class="diagram-node">BUILD</div><div class="diagram-arrow">→</div>
+        <div class="diagram-node">TEST</div><div class="diagram-arrow">→</div>
+        <div class="diagram-node">DOCUMENT</div><div class="diagram-arrow">→</div>
+        <div class="diagram-node accent">EVOLVE</div>
+      </div>
+    </div>
+    
+    <div class="callout">
+      REKORA transforms an individual student project into a reusable, continuously evolving engineering asset.
+    </div>
+    
+    <p>To validate this model, we propose an initial controlled pilot at St. Joseph's College of Engineering. This pilot introduces component rental to drastically lower student costs, direct campus-based 3D printing, and peer-to-peer resource exchange. We seek an initial seed allocation of ₹1,00,000–₹2,00,000 to establish the hardware inventory and deployment operations.</p>
+    
+  </div>
+  <div class="footer"><div>REKORA — Business Proposal</div><div>02</div></div>
+</div>
+
+<!-- PAGE 03: THE PROBLEM & OPPORTUNITY -->
+<div class="page">
+  <div class="content">
+    <div class="header">
+      <div class="header-left">REKORA</div>
+      <div class="header-right">Problem & Opportunity</div>
+    </div>
+    
+    <h2>02. THE PROBLEM</h2>
+    <p style="margin-bottom: 6mm;">The academic engineering lifecycle is economically inefficient and structurally fragmented.</p>
+    
+    <div class="grid-2">
+      <div class="block">
+        <span class="block-num">01</span>
+        <div class="block-title">Fragmented Resources</div>
+        <p class="text-muted" style="font-size: 9pt;">Ideation, component sourcing, CAD modification, manufacturing, and documentation exist in isolated silos.</p>
+      </div>
+      <div class="block">
+        <span class="block-num">02</span>
+        <div class="block-title">Repeated Hardware Purchases</div>
+        <p class="text-muted" style="font-size: 9pt;">Students frequently purchase expensive components and hardware kits required only temporarily for a single prototype.</p>
+      </div>
+      <div class="block">
+        <span class="block-num">03</span>
+        <div class="block-title">Limited Access to Fabrication</div>
+        <p class="text-muted" style="font-size: 9pt;">Moving from digital CAD to a physical prototype is a bottleneck due to limited accessible 3D printing facilities.</p>
+      </div>
+      <div class="block">
+        <span class="block-num">04</span>
+        <div class="block-title">Loss of Project Knowledge</div>
+        <p class="text-muted" style="font-size: 9pt;">Once evaluated, troubleshooting steps and design logic disappear. There is no centralized system to capture output.</p>
+      </div>
+      <div class="block">
+        <span class="block-num">05</span>
+        <div class="block-title">Projects Restart From Zero</div>
+        <p class="text-muted" style="font-size: 9pt;">Because prior work is inaccessible, students cannot easily build upon previous engineering solutions.</p>
+      </div>
+      <div class="block">
+        <span class="block-num">06</span>
+        <div class="block-title">Limited Continuity</div>
+        <p class="text-muted" style="font-size: 9pt;">Subsequent cohorts are forced to build identical basic systems year after year, preventing ambitious engineering evolution.</p>
+      </div>
+    </div>
+
+    <h2 style="margin-top: 4mm;">03. THE OPPORTUNITY</h2>
+    <p>By consolidating the fragmented components of project development into a unified platform, we can reduce the financial barrier to innovation while dramatically improving the quality of student output.</p>
+    <div class="callout" style="border-color: var(--primary); background: #f0f4f8;">
+      The integration of project discovery, hardware sourcing, and digital repositories opens the door for a circular academic economy—where resources are rented, reused, and continuously iterated upon.
+    </div>
+
+  </div>
+  <div class="footer"><div>REKORA — Business Proposal</div><div>03</div></div>
+</div>
+
+<!-- PAGE 04: REKORA ECOSYSTEM DIAGRAM -->
+<div class="page">
+  <div class="content">
+    <div class="header">
+      <div class="header-left">REKORA</div>
+      <div class="header-right">The Ecosystem</div>
+    </div>
+    
+    <h2>04. REKORA — THE INTEGRATED ECOSYSTEM</h2>
+    <p>REKORA is designed to guide an engineering project from conceptualization to physical realization, and finally to archival and evolution.</p>
+    
+    <!-- Pure CSS Grid Architecture Diagram safely contained -->
+    <div style="margin: 10mm auto; width: 100%; max-width: 150mm; display: flex; flex-direction: column; align-items: center; border: 1px solid var(--border); padding: 8mm; background: var(--bg);">
+      
+      <div style="font-weight: 800; font-size: 14pt; color: var(--primary); letter-spacing: 2px; margin-bottom: 2mm;">REKORA</div>
+      <div style="height: 6mm; border-left: 1px dashed var(--accent);"></div>
+      <div style="background: var(--white); border: 1px solid var(--primary); padding: 3mm 10mm; font-weight: 700; color: var(--primary); font-size: 11pt; margin-bottom: 2mm; width: 100%; text-align: center;">ENGINEERING PROJECT</div>
+      <div style="height: 6mm; border-left: 1px dashed var(--accent);"></div>
+      
+      <!-- Horizontal Branch -->
+      <div style="width: 100%; border-top: 1px solid var(--accent); position: relative;">
+        <div style="position: absolute; left: 16%; top: 0; height: 4mm; border-left: 1px solid var(--accent);"></div>
+        <div style="position: absolute; left: 50%; top: 0; height: 4mm; border-left: 1px solid var(--accent);"></div>
+        <div style="position: absolute; right: 16%; top: 0; height: 4mm; border-left: 1px solid var(--accent);"></div>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; width: 100%; padding-top: 4mm; margin-bottom: 2mm;">
+        <div style="width: 30%; text-align: center;">
+          <div style="background: var(--white); border: 1px solid var(--border); padding: 2mm; font-weight: 700; font-size: 9pt;">AI Blueprint</div>
+        </div>
+        <div style="width: 30%; text-align: center;">
+          <div style="background: var(--white); border: 1px solid var(--border); padding: 2mm; font-weight: 700; font-size: 9pt;">CAD Design</div>
+        </div>
+        <div style="width: 30%; text-align: center;">
+          <div style="background: var(--white); border: 1px solid var(--border); padding: 2mm; font-weight: 700; font-size: 9pt;">Buy / Rent / Reuse</div>
+        </div>
+      </div>
+      
+      <div style="width: 100%; border-bottom: 1px solid var(--accent); position: relative; height: 4mm; margin-bottom: 2mm;">
+        <div style="position: absolute; left: 16%; bottom: 0; height: 4mm; border-left: 1px solid var(--accent);"></div>
+        <div style="position: absolute; left: 50%; bottom: -4mm; height: 8mm; border-left: 1px solid var(--accent);"></div>
+        <div style="position: absolute; right: 16%; bottom: 0; height: 4mm; border-left: 1px solid var(--accent);"></div>
+      </div>
+      
+      <div style="height: 4mm;"></div>
+      
+      <div style="display: flex; flex-direction: column; align-items: center; width: 100%; gap: 2mm;">
+        <div style="background: var(--white); border: 1px solid var(--border); padding: 2mm; width: 60%; text-align: center; font-size: 9pt; font-weight: 600;">FABRICATION</div>
+        <div style="height: 3mm; border-left: 1px dashed var(--text-muted);"></div>
+        <div style="background: var(--white); border: 1px solid var(--border); padding: 2mm; width: 60%; text-align: center; font-size: 9pt; font-weight: 600;">BUILD & TEST</div>
+        <div style="height: 3mm; border-left: 1px dashed var(--text-muted);"></div>
+        <div style="background: var(--primary); color: var(--white); padding: 3mm; width: 60%; text-align: center; font-size: 10pt; font-weight: 700;">PROJECT DNA</div>
+        <div style="height: 3mm; border-left: 1px dashed var(--accent);"></div>
+        <div style="background: var(--accent); color: var(--white); padding: 3mm; width: 60%; text-align: center; font-size: 10pt; font-weight: 700;">VERSION / EVOLVE</div>
+      </div>
+      
+    </div>
+
+  </div>
+  <div class="footer"><div>REKORA — Business Proposal</div><div>04</div></div>
+</div>
+
+<!-- PAGE 05: HOW REKORA WORKS -->
+<div class="page">
+  <div class="content">
+    <div class="header">
+      <div class="header-left">REKORA</div>
+      <div class="header-right">Core Workflows</div>
+    </div>
+    
+    <h2>05. HOW REKORA WORKS</h2>
+    
+    <div class="grid-2" style="margin-top: 8mm; gap: 8mm;">
+      <div>
+        <div class="block-title">Discovery & AI</div>
+        <p class="text-muted">Users begin with a problem, budget, or components. The platform algorithmically recommends suitable initiatives, while the AI Project Engineer frames constraints and generates a blueprint.</p>
+      </div>
+      <div>
+        <div class="block-title">Component Sourcing</div>
+        <p class="text-muted">To reduce unnecessary purchases, REKORA integrates project BOMs directly with inventory. Students can choose to Buy, Rent, Use Existing, or Borrow components item by item.</p>
+      </div>
+      <div>
+        <div class="block-title">CAD & Fabrication</div>
+        <p class="text-muted">REKORA connects digital design to the physical build. Students customize CAD models aligned with their requirements, routing them directly to campus 3D printing.</p>
+      </div>
+      <div>
+        <div class="block-title">Build & Documentation</div>
+        <p class="text-muted">During physical assembly, REKORA provides integration logic, troubleshooting, and standardized documentation frameworks to support academic submission rigor.</p>
+      </div>
+      <div>
+        <div class="block-title">Project DNA</div>
+        <p class="text-muted">Every completed project receives a persistent digital identity preserving the exact configuration of hardware, software, and logic for future reference.</p>
+      </div>
+      <div>
+        <div class="block-title">Evolution & Marketplace</div>
+        <p class="text-muted">Future users fork the repository to improve the physical design or code, while senior cohorts trade unused hardware via a peer-to-peer exchange.</p>
+      </div>
+    </div>
+    
+  </div>
+  <div class="footer"><div>REKORA — Business Proposal</div><div>05</div></div>
+</div>
+
+<!-- PAGE 06: PROJECT PREVIEW -->
+<div class="page">
+  <div class="content">
+    <div class="header">
+      <div class="header-left">REKORA</div>
+      <div class="header-right">Information Architecture</div>
+    </div>
+    
+    <h2>06. PROJECT PREVIEW & UNLOCK MODEL</h2>
+    <p>When a user discovers a project, they do not immediately receive the complete implementation logic. The platform uses a Preview & Unlock model to protect IP and ensure suitability.</p>
+    
+    <div class="ui-concept">
+      <div class="ui-header">
+        <h3 class="mb-0" style="color: var(--primary); font-size: 11pt;">AUTONOMOUS FLOATING WASTE COLLECTOR</h3>
+        <div style="font-size: 8pt; color: var(--text-muted);">Robotics • IoT • Computer Vision</div>
+      </div>
+      <div class="ui-body">
+        <div class="grid-3" style="border-bottom: 1px solid var(--border); padding-bottom: 4mm; margin-bottom: 4mm;">
+          <div><strong style="font-size: 8pt;">DIFFICULTY</strong><br><span class="text-muted">Intermediate</span></div>
+          <div><strong style="font-size: 8pt;">EST. BUILD COST</strong><br><span class="text-muted">₹4,500–₹6,000</span></div>
+          <div><strong style="font-size: 8pt;">EST. TIME</strong><br><span class="text-muted">2–4 Weeks</span></div>
+        </div>
+        
+        <p class="bold" style="font-size: 9pt;">ABSTRACT</p>
+        <p class="text-muted">A low-cost autonomous surface vessel designed to identify and collect macro-plastics in static water bodies using localized computer vision.</p>
+        
+        <div class="grid-2">
+          <div>
+            <p class="bold" style="font-size: 9pt;">KEY CAPABILITIES</p>
+            <ul class="text-muted" style="font-size: 8.5pt;">
+              <li>Autonomous navigation</li>
+              <li>Waste detection via CV</li>
+              <li>Modular collection nets</li>
+            </ul>
+          </div>
+          <div>
+            <p class="bold" style="font-size: 9pt;">TECHNOLOGIES</p>
+            <p class="text-muted" style="font-size: 8.5pt;">ESP32 | Camera | GPS | Motor Control</p>
+          </div>
+        </div>
+        
+        <div style="background: var(--bg); padding: 4mm; border-left: 3px solid var(--primary); margin-top: 4mm;">
+          <p class="bold" style="font-size: 9pt; margin-bottom: 2mm;">WHAT YOU GET UPON UNLOCK:</p>
+          <p class="text-muted" style="font-size: 8.5pt; margin: 0;">Full Architecture • BOM • CAD Files • Source Code • Testing Plans • Docs</p>
+        </div>
+        
+        <div style="text-align: center; margin-top: 6mm;">
+          <span style="background: var(--accent); color: var(--white); padding: 2mm 8mm; font-weight: 700; font-size: 9pt; border-radius: 2px;">UNLOCK PROJECT REPOSITORY</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grid-2" style="margin-top: 8mm;">
+      <div style="border-top: 1px solid var(--border); padding-top: 2mm;">
+        <div class="bold text-accent" style="font-size: 9pt;">THE PREVIEW ANSWERS:</div>
+        <p class="text-muted">What? Why? Who is it for? How difficult? What does it use?</p>
+      </div>
+      <div style="border-top: 1px solid var(--border); padding-top: 2mm;">
+        <div class="bold" style="font-size: 9pt; color: var(--primary);">THE REPOSITORY ANSWERS:</div>
+        <p class="text-muted">How exactly?</p>
+      </div>
+    </div>
+    
+  </div>
+  <div class="footer"><div>REKORA — Business Proposal</div><div>06</div></div>
+</div>
+
+<!-- PAGE 07: REPOSITORY AND DNA -->
+<div class="page">
+  <div class="content">
+    <div class="header">
+      <div class="header-left">REKORA</div>
+      <div class="header-right">Project Evolution</div>
+    </div>
+    
+    <h2>07. PROJECT DNA & VERSION EVOLUTION</h2>
+    
+    <div class="grid-2">
+      <div>
+        <p>Once unlocked, the Project Repository provides a structured environment for execution. More importantly, every completed project retains its engineering history as <strong>Project DNA</strong>.</p>
+        <p>This version control philosophy allows future students to study, build, modify, test, and contribute to an existing project rather than discarding it. The project becomes a continuously evolving engineering asset.</p>
+      </div>
+      <div style="background: var(--bg); padding: 6mm; border: 1px solid var(--border); font-family: monospace; font-size: 9pt; line-height: 1.6;">
+        <strong>PROJECT REPOSITORY</strong><br><br>
+        01 OVERVIEW<br>
+        02 REQUIREMENTS<br>
+        03 HARDWARE (BOM)<br>
+        04 SOFTWARE (Code)<br>
+        05 CAD & DESIGN<br>
+        06 FABRICATION<br>
+        07 BUILD INSTRUCTIONS<br>
+        08 TESTING RESULTS<br>
+        09 DOCUMENTATION<br>
+        10 VERSION HISTORY
+      </div>
+    </div>
+    
+    <div class="block" style="margin-top: 8mm;">
+      <div class="block-title">The Evolution Tree Concept</div>
+    </div>
+    
+    <!-- Redesigned DNA Tree -->
+    <div style="font-family: monospace; font-size: 9pt; background: var(--white); padding: 6mm; border: 1px solid var(--border);">
+      <div class="bold" style="color: var(--primary);">PROJECT: Autonomous Waste Collector</div>
+      <div style="color: var(--border);">│</div>
+      <div><span style="color: var(--border);">├──</span> <span class="bold" style="color: var(--primary);">v1.0 (Initial Prototype)</span></div>
+      <div style="color: var(--border);">│</div>
+      <div><span style="color: var(--border);">├──</span> <span class="bold" style="color: var(--primary);">v1.1</span></div>
+      <div><span style="color: var(--border);">│&nbsp;&nbsp;&nbsp;└──</span> Improved chassis design</div>
+      <div style="color: var(--border);">│</div>
+      <div><span style="color: var(--border);">├──</span> <span class="bold" style="color: var(--primary);">v1.2</span></div>
+      <div><span style="color: var(--border);">│&nbsp;&nbsp;&nbsp;└──</span> Reduced BOM cost via alternate motors</div>
+      <div style="color: var(--border);">│</div>
+      <div><span style="color: var(--border);">└──</span> <span class="bold" style="color: var(--accent);">v2.0 (Major Evolution)</span></div>
+      <div><span style="color: var(--white);">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: var(--border);">├──</span> Integrated AI vision processing</div>
+      <div><span style="color: var(--white);">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: var(--border);">└──</span> Full autonomous navigation capability</div>
+    </div>
+    
+  </div>
+  <div class="footer"><div>REKORA — Business Proposal</div><div>07</div></div>
+</div>
+
+<!-- PAGE 08: COMPONENT ECOSYSTEM & QR -->
+<div class="page">
+  <div class="content">
+    <div class="header">
+      <div class="header-left">REKORA</div>
+      <div class="header-right">Resource Management</div>
+    </div>
+    
+    <h2>08. COMPONENT BUY / RENT / REUSE</h2>
+    <p>REKORA connects project BOM items directly with campus inventory availability, significantly reducing the financial burden of hardware acquisition.</p>
+    
+    <table style="margin-top: 6mm;">
+      <tr>
+        <th style="width: 40%;">Project Component</th>
+        <th style="width: 30%;">Inventory Status</th>
+        <th style="width: 30%;">Action Options</th>
+      </tr>
+      <tr>
+        <td class="bold">ESP32 Microcontroller</td>
+        <td class="text-accent">Available in Inventory</td>
+        <td><span class="bold">[BUY]</span> or <span class="bold text-accent">[RENT]</span></td>
+      </tr>
+      <tr>
+        <td class="bold">Motor Driver (L298N)</td>
+        <td class="text-muted">User already owns</td>
+        <td><span class="bold text-muted">[USE EXISTING]</span></td>
+      </tr>
+      <tr>
+        <td class="bold">Custom Sensor Housing</td>
+        <td class="text-muted">Digital CAD file only</td>
+        <td><span class="bold">[3D PRINT]</span></td>
+      </tr>
+      <tr>
+        <td class="bold">Standard Bearing 608ZZ</td>
+        <td class="text-muted">Consumable</td>
+        <td><span class="bold">[BUY]</span></td>
+      </tr>
+    </table>
+    
+    <div class="block" style="margin-top: 10mm;">
+      <div class="block-title">QR-Based Component Lifecycle</div>
+    </div>
+    <p>To support this ecosystem, physical components are managed via a QR-based lifecycle system (e.g., RK-ESP32-001). This operational infrastructure ensures quality control across the rental inventory.</p>
+    
+    <!-- Redesigned QR Lifecycle -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8mm; background: var(--bg); padding: 8mm 6mm; border-radius: 4px; border: 1px solid var(--border);">
+      <div class="text-center">
+        <div style="font-size: 14pt; font-weight: 300; color: var(--accent);">01</div>
+        <div class="bold" style="font-size: 8pt;">IDENTIFY</div>
+      </div>
+      <div class="diagram-arrow">→</div>
+      <div class="text-center">
+        <div style="font-size: 14pt; font-weight: 300; color: var(--accent);">02</div>
+        <div class="bold" style="font-size: 8pt;">PROJECT USE</div>
+      </div>
+      <div class="diagram-arrow">→</div>
+      <div class="text-center">
+        <div style="font-size: 14pt; font-weight: 300; color: var(--accent);">03</div>
+        <div class="bold" style="font-size: 8pt;">RETURN</div>
+      </div>
+      <div class="diagram-arrow">→</div>
+      <div class="text-center">
+        <div style="font-size: 14pt; font-weight: 300; color: var(--accent);">04</div>
+        <div class="bold" style="font-size: 8pt;">INSPECT & REUSE</div>
+      </div>
+    </div>
+    
+  </div>
+  <div class="footer"><div>REKORA — Business Proposal</div><div>08</div></div>
+</div>
+
+<!-- PAGE 09: REVENUE & BUSINESS MODEL -->
+<div class="page">
+  <div class="content">
+    <div class="header">
+      <div class="header-left">REKORA</div>
+      <div class="header-right">Business Logic</div>
+    </div>
+    
+    <h2>09. BUSINESS & REVENUE MODEL</h2>
+    <p>REKORA establishes a diversified, sustainable revenue architecture that minimizes reliance on low-margin commodity sales by monetizing services, access, and asset utilization.</p>
+    
+    <div class="block" style="margin-top: 8mm;">
+      <div class="block-title">Initial Revenue Model (Campus Pilot)</div>
+    </div>
+    <table>
+      <tr>
+        <th style="width: 35%;">Revenue Stream</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td class="bold">Project Repository Access</td>
+        <td class="text-muted">Users pay to unlock complete project resources, CAD, and source code.</td>
+      </tr>
+      <tr>
+        <td class="bold">Component Rental</td>
+        <td class="text-muted">Recurring high-margin utilization of physical inventory hardware.</td>
+      </tr>
+      <tr>
+        <td class="bold">Component Sales</td>
+        <td class="text-muted">Standard retail margin on consumable components and integrated project kits.</td>
+      </tr>
+      <tr>
+        <td class="bold">3D Printing & Fabrication</td>
+        <td class="text-muted">Manufacturing and service margins on direct campus-based 3D printing.</td>
+      </tr>
+      <tr>
+        <td class="bold">CAD & Design Services</td>
+        <td class="text-muted">Fees for paid design modifications and specific engineering assistance.</td>
+      </tr>
+      <tr>
+        <td class="bold">Marketplace Commission</td>
+        <td class="text-muted">Percentage commission on peer-to-peer transactions between students.</td>
+      </tr>
+    </table>
+    
+    <div class="block" style="margin-top: 8mm;">
+      <div class="block-title">Future Revenue Opportunities (Scaling)</div>
+    </div>
+    <table>
+      <tr>
+        <th style="width: 35%;">Revenue Stream</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td class="bold">Technical Assistance</td>
+        <td class="text-muted">Premium troubleshooting, mentoring, and structured engineering support tiers.</td>
+      </tr>
+      <tr>
+        <td class="bold">Premium Platform Features</td>
+        <td class="text-muted">Subscription model for advanced AI Project Engineer capabilities.</td>
+      </tr>
+      <tr>
+        <td class="bold">Institutional Services</td>
+        <td class="text-muted">College-level SaaS subscriptions for centralized campus project archives.</td>
+      </tr>
+      <tr>
+        <td class="bold">Industry Sponsorships</td>
+        <td class="text-muted">Monetizing corporate-sponsored engineering challenges and prototype development.</td>
+      </tr>
+    </table>
+    
+  </div>
+  <div class="footer"><div>REKORA — Business Proposal</div><div>09</div></div>
+</div>
+
+<!-- PAGE 10: PILOT AND BUDGET -->
+<div class="page">
+  <div class="content">
+    <div class="header">
+      <div class="header-left">REKORA</div>
+      <div class="header-right">Implementation Strategy</div>
+    </div>
+    
+    <h2>10. INITIAL COLLEGE PILOT & BUDGET</h2>
+    
+    <div class="callout" style="text-align: center; border-left: none; border-bottom: 2px solid var(--accent); padding-bottom: 6mm;">
+      <div class="block-title" style="font-size: 11pt;">ST. JOSEPH'S COLLEGE OF ENGINEERING</div>
+      <div class="text-muted">Initial Controlled Pilot Environment</div>
+    </div>
+    
+    <p>The objective of this college-first approach is to rigorously validate demand, operations, and willingness-to-pay before scaling. The pilot follows a strict iterative model:</p>
+    
+    <div style="display: flex; justify-content: space-between; margin: 6mm 0; border: 1px solid var(--border); padding: 4mm 6mm; background: var(--bg);">
+      <div class="bold" style="font-size: 8pt;">BUILD</div>
+      <div class="diagram-arrow">→</div>
+      <div class="bold" style="font-size: 8pt; color: var(--secondary);">VALIDATE</div>
+      <div class="diagram-arrow">→</div>
+      <div class="bold" style="font-size: 8pt; color: var(--accent);">REVENUE</div>
+      <div class="diagram-arrow">→</div>
+      <div class="bold" style="font-size: 8pt;">REINVEST</div>
+      <div class="diagram-arrow">→</div>
+      <div class="bold" style="font-size: 8pt;">EXPAND</div>
+    </div>
+    
+    <div class="block" style="margin-top: 10mm;">
+      <div class="block-title">Initial Seed Requirement</div>
+    </div>
+    <div style="font-size: 20pt; font-weight: 800; color: var(--primary); margin-bottom: 6mm;">₹1,00,000 – ₹2,00,000</div>
+    
+    <table>
+      <tr>
+        <th style="width: 65%;">Capital Allocation Category</th>
+        <th class="num-cell">Estimated Range (INR)</th>
+      </tr>
+      <tr>
+        <td><strong>Initial Component Inventory</strong><br><span class="text-muted" style="font-size: 8pt;">Microcontrollers, sensors, robotics hardware</span></td>
+        <td class="num-cell text-muted">₹50,000 – ₹80,000</td>
+      </tr>
+      <tr>
+        <td><strong>3D Printing & Fabrication</strong><br><span class="text-muted" style="font-size: 8pt;">Materials and equipment maintenance</span></td>
+        <td class="num-cell text-muted">₹20,000 – ₹40,000</td>
+      </tr>
+      <tr>
+        <td><strong>QR & Inventory Tracking</strong><br><span class="text-muted" style="font-size: 8pt;">Physical storage, labeling systems</span></td>
+        <td class="num-cell text-muted">₹5,000 – ₹10,000</td>
+      </tr>
+      <tr>
+        <td><strong>Operations & Cloud Logistics</strong><br><span class="text-muted" style="font-size: 8pt;">Packaging, server hosting, API overhead</span></td>
+        <td class="num-cell text-muted">₹10,000 – ₹20,000</td>
+      </tr>
+      <tr>
+        <td><strong>Marketing & Launch</strong><br><span class="text-muted" style="font-size: 8pt;">Student awareness, onboarding</span></td>
+        <td class="num-cell text-muted">₹5,000 – ₹10,000</td>
+      </tr>
+      <tr>
+        <td><strong>Contingency Reserve</strong></td>
+        <td class="num-cell text-muted">₹10,000 – ₹20,000</td>
+      </tr>
+      <tr>
+        <td class="bold" style="color: var(--primary);">Reference Total Allocation</td>
+        <td class="num-cell bold" style="color: var(--primary);">₹1,00,000 – ₹1,80,000</td>
+      </tr>
+    </table>
+    
+  </div>
+  <div class="footer"><div>REKORA — Business Proposal</div><div>10</div></div>
+</div>
+
+<!-- PAGE 11: RISKS AND TEAM -->
+<div class="page">
+  <div class="content">
+    <div class="header">
+      <div class="header-left">REKORA</div>
+      <div class="header-right">Risk & Leadership</div>
+    </div>
+    
+    <h2>11. RISK & MITIGATION</h2>
+    
+    <table>
+      <tr>
+        <th style="width: 35%;">Risk Factor</th>
+        <th>Mitigation Strategy</th>
+      </tr>
+      <tr>
+        <td class="bold">Inventory lock-in</td>
+        <td class="text-muted">Start exclusively with highly standardized, high-utilization components.</td>
+      </tr>
+      <tr>
+        <td class="bold">Hardware damage</td>
+        <td class="text-muted">Implement QR tracking, security deposits, and mandatory inspection.</td>
+      </tr>
+      <tr>
+        <td class="bold">Academic integrity</td>
+        <td class="text-muted">Strictly prohibit ready-made submissions; focus solely on resources.</td>
+      </tr>
+      <tr>
+        <td class="bold">Operational complexity</td>
+        <td class="text-muted">Restrict rollout entirely to a controlled college pilot before any expansion.</td>
+      </tr>
+    </table>
+    
+    <h2 style="margin-top: 10mm;">12. FOUNDING TEAM</h2>
+    <p style="margin-bottom: 6mm;">REKORA is driven by a specialized team possessing the technical and operational expertise necessary to execute this infrastructure.</p>
+    
+    <div class="grid-2">
+      <div style="border-left: 2px solid var(--primary); padding-left: 4mm;">
+        <div class="bold">Reshma S</div>
+        <div class="text-accent" style="font-size: 8pt; font-weight: 700; margin-bottom: 2mm;">FOUNDER & CHIEF EXECUTIVE OFFICER</div>
+        <p class="text-muted" style="font-size: 8.5pt;">Strategic vision, enterprise growth, and institutional partnerships.</p>
+      </div>
+      <div style="border-left: 2px solid var(--primary); padding-left: 4mm;">
+        <div class="bold">Rogith Kumar R</div>
+        <div class="text-accent" style="font-size: 8pt; font-weight: 700; margin-bottom: 2mm;">CO-FOUNDER & CHIEF OPERATING OFFICER</div>
+        <p class="text-muted" style="font-size: 8.5pt;">Operational scaling, execution strategy, and continuous process optimization.</p>
+      </div>
+      <div style="border-left: 2px solid var(--primary); padding-left: 4mm;">
+        <div class="bold">NandhaKumar G</div>
+        <div class="text-accent" style="font-size: 8pt; font-weight: 700; margin-bottom: 2mm;">CO-FOUNDER & CHIEF TECHNOLOGY OFFICER</div>
+        <p class="text-muted" style="font-size: 8.5pt;">Lead software development, additive manufacturing, and systems integration.</p>
+      </div>
+      <div style="border-left: 2px solid var(--primary); padding-left: 4mm;">
+        <div class="bold">Monica S</div>
+        <div class="text-accent" style="font-size: 8pt; font-weight: 700; margin-bottom: 2mm;">HEAD OF SUPPLY CHAIN & LOGISTICS</div>
+        <p class="text-muted" style="font-size: 8.5pt;">Asset lifecycle management, inventory control, and precision procurement tracking.</p>
+      </div>
+      <div style="border-left: 2px solid var(--primary); padding-left: 4mm;">
+        <div class="bold">Justin I</div>
+        <div class="text-accent" style="font-size: 8pt; font-weight: 700; margin-bottom: 2mm;">LEAD PRODUCT ENGINEER</div>
+        <p class="text-muted" style="font-size: 8.5pt;">Parametric modeling, rapid prototyping, and physical hardware architecture.</p>
+      </div>
+      <div style="border-left: 2px solid var(--primary); padding-left: 4mm;">
+        <div class="bold">Sanjay B</div>
+        <div class="text-accent" style="font-size: 8pt; font-weight: 700; margin-bottom: 2mm;">HEAD OF STRATEGIC PARTNERSHIPS</div>
+        <p class="text-muted" style="font-size: 8.5pt;">Stakeholder engagement, requirement analysis, and academic relations.</p>
+      </div>
+    </div>
+    
+  </div>
+  <div class="footer"><div>REKORA — Business Proposal</div><div>11</div></div>
+</div>
+
+<!-- PAGE 12: CONCLUSION / ASK -->
+<div class="page">
+  <div class="content flex-center" style="text-align: center;">
+    
+    <div style="font-size: 28pt; font-weight: 800; color: var(--primary); letter-spacing: -1px; margin-bottom: 4mm;">REKORA</div>
+    <div style="font-size: 11pt; font-weight: 600; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 24mm;">
+      FROM IDEA TO PROTOTYPE.<br>FROM PROTOTYPE TO EVOLUTION.
+    </div>
+    
+    <div style="font-size: 14pt; font-weight: 300; color: var(--primary); max-width: 120mm; line-height: 1.6; margin-bottom: 24mm;">
+      Supporting REKORA is an opportunity to establish a cumulative engineering ecosystem in which <span class="bold">today's project becomes tomorrow's foundation.</span>
+    </div>
+    
+    <div style="border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 12mm 0; width: 100%; max-width: 140mm;">
+      <div class="block-title" style="font-size: 9pt;">REQUEST FOR INSTITUTIONAL APPROVAL & INITIAL SEED SUPPORT</div>
+      <div style="font-size: 20pt; font-weight: 800; color: var(--primary); margin: 4mm 0;">₹1,00,000 – ₹2,00,000</div>
+      <div class="text-muted" style="font-size: 9pt;">St. Joseph's College of Engineering<br>Chennai</div>
+    </div>
+    
+  </div>
+</div>
+
+</body>
+</html>
